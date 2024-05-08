@@ -10,28 +10,39 @@ public class FareCalculatorService {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
 		}
 
-		// Obtenir le temps en millisecondes (comme dans FareCalculatorServiceTest.java)
+		// Get time in milliseconds (same as the logic in tests in
+		// FareCalculatorServiceTest.java)
 		long inTimeInMillis = ticket.getInTime().getTime();
 
 		long outTimeInMillis = ticket.getOutTime().getTime();
 
 		// TODO: Some tests are failing here. Need to check if this logic is correct
 		/*
-		 * Calcul de la durée de stationnement en minutes en soustrayant le temps de
-		 * sortie du temps d'entrée Et en divisant le résultat par 60 000 pour convertir
-		 * les millisecondes en minutes
+		 * Calculate parking time in minutes by subtracting the exit time
+		 * (outTimeInMillis) from the entry time (inTimeInMillis) And divide the result
+		 * by 60 000 to convert milliseconds to minutes
 		 */
 		long durationInMinutes = (outTimeInMillis - inTimeInMillis) / 60000;
 		System.out.println("TEST temps duration FareCalculatorService: " + durationInMinutes);
 
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
-			// On divise le tarif horaire par 60 pour obtenir le tarif par minute
-			ticket.setPrice((durationInMinutes * Fare.CAR_RATE_PER_HOUR) / 60);
+			// Implements the free fare if parking is less than 30 minutes
+			if (durationInMinutes < 30) {
+				ticket.setPrice(0);
+			} else {
+				// Dividing the fare per hour by 60 to have the fare per minute
+				ticket.setPrice((durationInMinutes * Fare.CAR_RATE_PER_HOUR) / 60);
+			}
 			break;
 		}
 		case BIKE: {
-			ticket.setPrice((durationInMinutes * Fare.BIKE_RATE_PER_HOUR) / 60);
+			// Implements the free fare if parking is less than 30 minutes
+			if (durationInMinutes < 30) {
+				ticket.setPrice(0);
+			} else {
+				ticket.setPrice((durationInMinutes * Fare.BIKE_RATE_PER_HOUR) / 60);
+			}
 			break;
 		}
 		default:
