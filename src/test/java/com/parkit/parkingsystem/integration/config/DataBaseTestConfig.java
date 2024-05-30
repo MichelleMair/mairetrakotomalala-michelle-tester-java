@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,17 +13,14 @@ import com.parkit.parkingsystem.config.DataBaseConfig;
 
 public class DataBaseTestConfig extends DataBaseConfig {
 
-	private static Properties dataBaseProperties;
 	private static final Logger logger = LogManager.getLogger("DataBaseTestConfig");
-
-	public void loadDatabaseProperties(Properties properties) {
-		dataBaseProperties = properties;
-	}
 
 	public Connection getConnection() throws ClassNotFoundException, SQLException {
 		logger.info("Create DB connection");
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		return DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "rootroot");
+		return DriverManager.getConnection(
+				"jdbc:mysql://localhost/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+				"root", "rootroot");
 	}
 
 	public void closeConnection(Connection con) {
